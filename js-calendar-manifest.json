@@ -1,0 +1,18 @@
+{
+  "short_name": "Calendar",
+  "name": "JS Calendar",
+  "icons": [{
+    "src": "assets/favicon.png",
+    "sizes": "64x64",
+    "type": "image/png"
+  }, {
+    "src": "assets/icon-512.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }],
+  "start_url": "js-calendar.html",
+  "scope": "/",
+  "background_color": "white",
+  "theme_color": "white",
+  "display": "standalone"
+}

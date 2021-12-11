@@ -1,0 +1,123 @@
+/* (A) FONTS */
+/* GOOGLE MATERIAL ICONS - https://fonts.google.com/icons */
+* { font-family: arial, sans-serif; }
+html, body, input, button, textarea, select { font-size: 18px; }
+@font-face {
+  font-family: "Material Icons";
+  src:url(maticon.woff2) format("woff2");
+}
+.mi {
+  font-family: "Material Icons";
+  font-weight: 400;
+  font-style: normal;
+  font-size: 30px;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased
+}
+
+/* (B) ENTIRE PAGE */
+html, body {
+  padding: 0;
+  margin: 0 auto;
+  max-width: 1000px;
+  background: #e7ecf0;
+}
+input[type=button], input[type=submit], button { cursor: pointer; }
+.pageC {} .pageE {} .ninja { display: none; }
+.err {
+  padding: 10px;
+  margin: 10px;
+  background: #ffd5d5;
+  border: 1px solid #ff1212;
+}
+
+/* (C) HEADER */
+#cHead {
+  position: sticky;
+  display: flex;
+  color: #fff;
+  background: #2f6ab3;
+  padding: 20px;
+}
+#cHeadTitle {
+  font-size: 26px;
+  flex-grow: 1;
+}
+#cHeadBtn button {
+  background: 0;
+  border: 0;
+  color: #fff;
+}
+
+/* (D) CALENDAR */
+#cCal { padding: 20px; }
+#cMth, #cYear {
+  box-sizing: border-box;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  border: 0;
+}
+#calendar {
+  width: 100%;
+  border-collapse: collapse;
+}
+#calendar tr.head td {
+  text-transform: uppercase;
+  color: #fff;
+  background: #2f6ab3;
+  padding: 20px 5px;
+  text-align: center;
+}
+#calendar tr.day td {
+  border: 1px solid #efefef;
+  background: #fff;
+  width: 14.28%;
+  padding: 20px 5px;
+  vertical-align: top;
+}
+#calendar tr td.blank {
+  background: #d1d1d1;
+  border: 1px solid #d1d1d1;
+}
+#calendar tr td.today {
+  background: #fff2b4;
+}
+#calendar .dd {
+  font-size: 18px;
+  color: #7a7a7a;
+}
+#calendar .evt {
+  font-size: 13px;
+  margin: 5px 0;
+  padding: 5px;
+  background: #e0eeff;
+  max-height: 30px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* (E) ADD/EDIT NOTE FORM */
+#cForm {
+  padding: 20px;
+  background: #fff;
+}
+#cForm label, #cForm input, #cForm textarea {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+}
+#ceTxt { min-height: 300px; }
+#ceColor { min-height: 50px; }
+#cForm input[type=submit] {
+  margin-top: 20px;
+  border: 0;
+  color: #fff;
+  background: #bd2929;
+}

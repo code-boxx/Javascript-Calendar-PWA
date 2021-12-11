@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- TITLE + CHARSET + DESCRIPTION + VIEWPORT + FAVICON -->
+    <title>Offline JS Calendar</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Offline Javascript Calenar App">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <link rel="icon" href="assets/favicon.png" type="image/png">
+
+    <!-- WEB APP MANIFEST -->
+    <!-- https://web.dev/add-manifest/ -->
+    <link rel="manifest" href="js-calendar-manifest.json">
+
+    <!-- ANDROID + CHROME + APPLE + WINDOWS APP -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="white">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="JS Calendar">
+    <meta name="msapplication-TileImage" content="icon-512.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+
+    <!-- STYLESHEET + JAVASCRIPT -->
+    <link rel="stylesheet" href="assets/js-calendar.css">
+    <script async src="assets/js-calendar.js"></script>
+  </head>
+  <body>
+    <!-- (A) HEADER -->
+    <header id="cHead">
+      <!-- (A1) TITLE -->
+      <div id="cHeadTitle">
+        <span id="cHeadC" class="pageC">My Calendar</span>
+        <span id="cHeadE" class="pageE ninja">Add Event</span>
+      </div>
+
+      <!-- (A2) BUTTONS -->
+      <div id="cHeadBtn">
+        <button id="cAdd" class="pageC"><span class="mi">add_box</span></button>
+        <button id="cBack" class="pageE ninja"><span class="mi">reply</span></button>
+        <button id="cDel" class="pageE ninja"><span class="mi">delete</span></button>
+      </div>
+    </header>
+
+    <!-- (B) CALENDAR ITSELF -->
+    <div id="cCal" class="pageC">
+      <div id="cDate">
+        <select id="cMth"></select>
+        <select id="cYear"></select>
+      </div>
+      <div id="cWrap"></div>
+    </div>
+
+    <!-- (C) CALENDAR EVENT FORM -->
+    <form id="cForm" class="pageE ninja">
+      <label for="ceStart">Start Date</label>
+      <input type="date" id="ceStart" required/>
+      <label for="ceEnd">End Date</label>
+      <input type="date" id="ceEnd" required/>
+      <label for="ceTxt">Event</label>
+      <textarea id="ceTxt" required></textarea>
+      <label for="ceColor">Color</label>
+      <input type="color" id="ceColor" required/>
+      <input type="submit" value="Save"/>
+    </form>
+  </body>
+</html>
