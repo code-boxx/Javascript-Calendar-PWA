@@ -141,7 +141,7 @@ var cal = {
   sLast : null, // last day (yyyymmdd) of selected month/year
   sDays : null, // number of days in selected month/year
   data : null, // events data for selected month/year
-  load : (init, data) => {
+  load : (init) => {
     // (E1) LOAD DATA FROM IDB
     if (init) {
       // (E1-1) GET SELECTED MONTH YEAR
@@ -156,26 +156,52 @@ var cal = {
       cal.sFirst = parseInt(cal.sYear + sMth + "01");
       cal.sLast = parseInt(cal.sYear + sMth + cal.sDays);
 
-      // (E1-3) FETCH!
+      // (E1-3) FETCH INIT
+      // INEFFICIENT. BUT NO OTHER WAYS TO DO COMPLEX SEARCH IN IDB.
       cal.ready = 0;
       cal.data = {};
-      let range = IDBKeyRange.bound(cal.sFirst, cal.sLast),
-          reqS = cal.iTX().index("start").getAll(range),
-          reqE = cal.iTX().index("end").getAll(range);
-      reqS.onsuccess = () => { cal.load(false, reqS.result); };
-      reqE.onsuccess = () => { cal.load(false, reqE.result); };
+      document.getElementById("cWrap").innerHTML = "";
+      let rangeA = IDBKeyRange.bound(cal.sFirst, cal.sLast),
+          rangeB = IDBKeyRange.lowerBound(cal.sLast, true);
+
+      // (E1-4) GET ALL START DATE THAT FALLS INSIDE MONTH/YEAR
+      cal.iTX().index("start").openCursor(rangeA).onsuccess = (evt) => {
+        let cursor = evt.target.result;
+        if (cursor) {
+          if (!cal.data[cursor.value.id]) {
+            cal.data[cursor.value.id] = cursor.value;
+          }
+          cursor.continue();
+        } else { cal.load(false); }
+      };
+
+      // (E1-5) GET ALL END DATE THAT FALLS INSIDE MONTH/YEAR
+      cal.iTX().index("end").openCursor(rangeA).onsuccess = (evt) => {
+        let cursor = evt.target.result;
+        if (cursor) {
+          if (!cal.data[cursor.value.id]) {
+            cal.data[cursor.value.id] = cursor.value;
+          }
+          cursor.continue();
+        } else { cal.load(false); }
+      };
+
+      // (E1-6) END DATE AFTER SELECTED MONTH/YEAR, BUT START IS BEFORE
+      cal.iTX().index("end").openCursor(rangeB).onsuccess = (evt) => {
+        let cursor = evt.target.result;
+        if (cursor) {
+          if (cursor.value.start<cal.sFirst && !cal.data[cursor.value.id]) {
+            cal.data[cursor.value.id] = cursor.value;
+          }
+          cursor.continue();
+        } else { cal.load(false); }
+      };
     }
 
-    // (E2) COMBINE EVENTS DATA FROM IDB
+    // (E2) WAIT FOR DATA FETCH COMPLETION
     else {
-      // (E2-1) COMBINE EVENTS DATA INTO SINGLE OBJECT
-      for (let e of data) { if (cal.data[e.id] == undefined) {
-        cal.data[e.id] = e;
-      }}
-
-      // (E2-2) DATA READY - DRAW HTML CALENDAR
       cal.ready++;
-      if (cal.ready==2) {
+      if (cal.ready==3) {
         cal.toggle("C");
         cal.draw();
       }
