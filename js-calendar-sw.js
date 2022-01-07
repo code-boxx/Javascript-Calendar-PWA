@@ -14,7 +14,7 @@ cFiles = [
   "js-calendar-manifest.json",
   // (A5) PAGES
   "js-calendar.html",
-  "js-notes.html",  "form.inc",
+  "form.inc",
   "home.inc"
 ];
 
