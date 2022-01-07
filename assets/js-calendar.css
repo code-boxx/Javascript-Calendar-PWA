@@ -1,123 +1,136 @@
-/* (A) FONTS */
-/* GOOGLE MATERIAL ICONS - https://fonts.google.com/icons */
-* { font-family: arial, sans-serif; }
-html, body, input, button, textarea, select { font-size: 18px; }
-@font-face {
-  font-family: "Material Icons";
-  src:url(maticon.woff2) format("woff2");
-}
-.mi {
-  font-family: "Material Icons";
-  font-weight: 400;
-  font-style: normal;
-  font-size: 30px;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  -webkit-font-feature-settings: "liga";
-  -webkit-font-smoothing: antialiased
+/* (A) VARS */
+:root {
+  --color-black: #333;
+  --color-grey: #dfdfdf;
+  --color-white: #fff;
+  --color-red: #c51212;
+  --color-green: #04836b;
+  --color-blue: #063cb7;
+  --color-yellow: #fbffc0;
+  --color-bg-page: #e8f0f7;
+  --color-bg-head: #1671e1;
 }
 
-/* (B) ENTIRE PAGE */
+/* (B) GOOGLE MATERIAL ICONS - https://fonts.google.com/icons */
+@font-face{font-family:"Material Icons";src:url(maticon.woff2) format("woff2")}
+.mi{font-family:"Material Icons";font-weight:400;font-style:normal;text-decoration:none;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-feature-settings:"liga";-webkit-font-smoothing:antialiased}
+
+/* (C) GLOBAL */
 html, body {
-  padding: 0;
-  margin: 0 auto;
   max-width: 1000px;
-  background: #e7ecf0;
+  margin: 0 auto; padding: 0;
+  background: var(--color-bg-page);
 }
-input[type=button], input[type=submit], button { cursor: pointer; }
-.pageC {} .pageE {} .ninja { display: none; }
-.err {
-  padding: 10px;
-  margin: 10px;
-  background: #ffd5d5;
-  border: 1px solid #ff1212;
-}
-
-/* (C) HEADER */
-#cHead {
-  position: sticky;
-  display: flex;
-  color: #fff;
-  background: #2f6ab3;
-  padding: 20px;
-}
-#cHeadTitle {
-  font-size: 26px;
-  flex-grow: 1;
-}
-#cHeadBtn button {
-  background: 0;
-  border: 0;
-  color: #fff;
-}
-
-/* (D) CALENDAR */
-#cCal { padding: 20px; }
-#cMth, #cYear {
+* {
+  font-family: arial, sans-serif;
   box-sizing: border-box;
-  padding: 10px 20px;
-  font-size: 1.2em;
-  border: 0;
 }
-#calendar {
+div.error {
+  margin: 5px; padding: 5px;
+  color: var(--color-white);
+  background: var(--color-red);
+}
+.ninja { display: none; }
+
+/* (D) FORM */
+/* (D1) BUTTONS */
+.btn-ico, .btn-ico-grey, .btn-red, .btn-green, .btn-blue {
+  border: 0; padding: 10px;
+  cursor: pointer;
+  color: var(--color-white);
+}
+.btn-red, .btn-green, .btn-blue { font-size: 1.1em; }
+.btn-ico, .btn-ico-grey { background: 0; font-size: 2em; }
+.btn-ico-grey { color: var(--color-grey); }
+.btn-red { background: var(--color-red); }
+.btn-green { background: var(--color-green); }
+.btn-blue { background: var(--color-blue); }
+
+/* (D2) FORM FIELDS */
+.form-field {
+  font-size: 1.1em;
+  display: block;
   width: 100%;
+  padding: 10px;
+}
+
+/* (E) DIALOG */
+#cb-info {
+  position: fixed; top: 50%; left: 50%; z-index: 999;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  color: var(--color-white);
+  transition: opacity 0.4s;
+  visibility: hidden; opacity: 0
+}
+#cb-info.ok, #cb-info.no {
+  visibility: visible; opacity: 1;
+}
+#cb-info.ok { background: var(--color-blue); }
+#cb-info.no { background: var(--color-red); }
+#cb-info-ico { font-size: 3em; }
+
+/* (F) THIS APP */
+/* (F1) SHARED */
+.cb-head { padding: 10px 20px; }
+.cb-body, .cb-form { padding: 20px; }
+
+/* (F2) HEADER */
+.cb-head {
+  display: flex;
+  align-items: center;
+  color: var(--color-white);
+  background: var(--color-bg-head);
+}
+.cb-head-title {
+  flex-grow: 1;
+  margin: 0;
+  font-size: 1.7em;
+}
+
+/* (F3) CALENDAR */
+#cal-date select {
+  padding: 10px;
+  border: 0;
+  font-size: 1.5em;
+}
+#cal-table {
+  width: 100%;
+  margin-top: 10px;
   border-collapse: collapse;
 }
-#calendar tr.head td {
+.cal-table-head td {
   text-transform: uppercase;
-  color: #fff;
-  background: #2f6ab3;
+  font-weight: 700;
   padding: 20px 5px;
   text-align: center;
+  color: var(--color-white);
+  background: var(--color-red);
 }
-#calendar tr.day td {
+.cal-table-day td {
   border: 1px solid #efefef;
-  background: #fff;
+  background: var(--color-white);
   width: 14.28%;
   padding: 20px 5px;
   vertical-align: top;
 }
-#calendar tr td.blank {
-  background: #d1d1d1;
-  border: 1px solid #d1d1d1;
-}
-#calendar tr td.today {
-  background: #fff2b4;
-}
-#calendar .dd {
-  font-size: 18px;
-  color: #7a7a7a;
-}
-#calendar .evt {
-  font-size: 13px;
-  margin: 5px 0;
-  padding: 5px;
-  background: #e0eeff;
-  max-height: 30px;
+#cal-table .blank { background: var(--color-grey); }
+#cal-table .today { background: var(--color-yellow); }
+#cal-table .dd { color: var(--color-black); }
+#cal-table .evt {
+  font-size: 14px;
+  margin: 5px 0; padding: 5px;
+  max-height: 50px;
   overflow: hidden;
   cursor: pointer;
 }
 
-/* (E) ADD/EDIT NOTE FORM */
-#cForm {
-  padding: 20px;
-  background: #fff;
+/* (F4) ADD/EDIT EVENT */
+#cal-e-txt {
+  min-height: 80px;
+  resize: none;
 }
-#cForm label, #cForm input, #cForm textarea {
-  display: block;
-  box-sizing: border-box;
-  width: 100%;
-  padding: 10px;
-}
-#ceTxt { min-height: 300px; }
-#ceColor { min-height: 50px; }
-#cForm input[type=submit] {
-  margin-top: 20px;
-  border: 0;
-  color: #fff;
-  background: #bd2929;
-}
+#cal-e-color { min-height: 50px; }
+#cal-save { margin-top: 30px; }

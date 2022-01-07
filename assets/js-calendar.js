@@ -1,76 +1,66 @@
 var cal = {
-  // (A) GLOBAL SUPPORT FUNCTION - GENERATE HTML ERROR MESSAGE
-  err : (msg) => {
-    let row = document.createElement("div");
-    row.innerHTML = msg;
-    row.className = "err";
-    document.body.prepend(row);
-  },
+  // (A) INIT APP
+  iDB : null, iTX : null, iName : "MyCalendar", // idb object & transaction
+  init : () => {
+    // (A1) HTML + FLAGS STUFF
+    let pass = true,
+        page = document.getElementById("cb-main"),
+        err = (msg) => {
+          let row = document.createElement("div");
+          row.className = "error";
+          row.innerHTML = msg;
+          page.appendChild(row);
+        };
 
-  // (B) INIT PART 1 - REQUIREMENTS CHECK
-  iniA : () => {
-    // (B1) REQUIREMENTS INIT
-    let pass = true;
-
-    // (B2) REQUIREMENT - INDEXED DB
+    // (A2) REQUIREMENT - INDEXED DB
     window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
     if (!window.indexedDB) {
-      cal.err("Your browser does not support indexed database.");
+      err("Your browser does not support indexed database.");
       pass = false;
     }
 
-    // (B3) REQUIREMENT - SERVICE WORKER
+    // (A3) REQUIREMENT - SERVICE WORKER
     if (!"serviceWorker" in navigator) {
-      cal.err("Your browser does not support service workers.");
+      err("Your browser does not support service workers.");
       pass = false;
     }
 
-    // (B4) REQUIREMENT - CACHE STORAGE
+    // (A4) REQUIREMENT - CACHE STORAGE
     if (!caches) {
-      cal.err("Your browser does not support cache storage.");
+      err("Your browser does not support cache storage.");
       pass = false;
     }
 
-    // (B5) NO GO
-    if (!pass) { return; }
-
-    // (B6) OK - INIT WORKER & IDB
-    cal.iniB();
-  },
-
-  // (C) INIT PART 2 - SERVICE WORKER & IDB
-  iDBN : "MyCalendar", iDB : null, iTX : null, // IDB OBJECT & TRANSACTION
-  iniB : () => {
-    // (C1) SERVICE WORKER
+    // (A5) SERVICE WORKER
     navigator.serviceWorker.register("js-calendar-sw.js")
-    .then((reg) => { cal.iniC(); })
+    .then((reg) => { cal.start(); })
     .catch((err) => {
-      cal.err("Service worker init error - " + err.message);
+      err("Service worker init error - " + err.message);
       console.error(err);
     });
 
-    // (C2) INDEXED DATABASE
-    // (C2-1) OPEN "MYNOTES" DATABASE
-    let req = window.indexedDB.open(cal.iDBN, 1);
+    // (A6) INDEXED DATABASE
+    // (A6-1) OPEN "MYCALENDAR" DATABASE
+    let req = window.indexedDB.open(cal.iName, 1);
 
-    // (C2-2) ON DATABASE ERROR
+    // (A6-2) ON DATABASE ERROR
     req.onerror = (evt) => {
-      cal.err("Indexed DB init error - " + evt.message);
+      err("Indexed DB init error - " + evt.message);
       console.error(evt);
     };
 
-    // (C2-3) UPGRADE NEEDED
+    // (A6-3) UPGRADE NEEDED
     req.onupgradeneeded = (evt) => {
       // INIT UPGRADE
       cal.iDB = evt.target.result;
       cal.iDB.onerror = (evt) => {
-        cal.err("Indexed DB upgrade error - " + evt.message);
+        err("Indexed DB upgrade error - " + evt.message);
         console.error(evt);
       };
 
       // VERSION 1
       if (evt.oldVersion < 1) {
-        let store = cal.iDB.createObjectStore(cal.iDBN, {
+        let store = cal.iDB.createObjectStore(cal.iName, {
           keyPath: "id",
           autoIncrement: true
         });
@@ -79,30 +69,35 @@ var cal = {
       }
     };
 
-    // (C2-4) OPEN DATABASE OK - REGISTER IDB OBJECTS
+    // (A6-4) OPEN DATABASE OK - REGISTER IDB OBJECTS
     req.onsuccess = (evt) => {
       cal.iDB = evt.target.result;
       cal.iTX = () => {
         return cal.iDB
-        .transaction(cal.iDBN, "readwrite")
-        .objectStore(cal.iDBN);
+        .transaction(cal.iName, "readwrite")
+        .objectStore(cal.iName);
       };
-      cal.iniC();
+      cal.start();
     };
   },
 
-  // (D) INIT PART 3 - HTML INTERFACE
-  // * PROCEED ONLY IF SERVICE WORKER + IDB OK
-  mName : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  // (B) START APP
   ready : 0, // number of ready components
-  iniC : () => { cal.ready++; if (cal.ready==2) {
-    // (D1) DATE NOW
+  start : () => {
+    cal.ready++;
+    if (cal.ready==2) { cb.load(); }
+  },
+
+  // (C) PREPARE CALENDAR INTERFACE
+  mName : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  prepare : () => {
+    // (C1) DATE NOW
     let now = new Date(),
         nowMth = now.getMonth(),
         nowYear = parseInt(now.getFullYear());
 
-    // (D2) APPEND MONTHS SELECTOR
-    let el = document.getElementById("cMth");
+    // (C2) APPEND MONTHS SELECTOR
+    let el = document.getElementById("cal-mth");
     for (let i=0; i<12; i++) {
       let opt = document.createElement("option");
       opt.value = i;
@@ -112,9 +107,9 @@ var cal = {
     }
     el.onchange = () => { cal.load(true); };
 
-    // (D3) APPEND YEARS SELECTOR
-    // Set to 10 years range. Change this as you like.
-    el = document.getElementById("cYear");
+    // (C3) APPEND YEARS SELECTOR
+    // set to 10 years range. change this as you like.
+    el = document.getElementById("cal-year");
     for (let i=nowYear-10; i<=nowYear+10; i++) {
       let opt = document.createElement("option");
       opt.value = i;
@@ -124,17 +119,11 @@ var cal = {
     }
     el.onchange = () => { cal.load(true); };
 
-    // (D4) OTHER BUTTONS & FORMS
-    document.getElementById("cAdd").onclick = () => { cal.addEdit() };
-    document.getElementById("cDel").onclick = cal.del;
-    document.getElementById("cBack").onclick = () => { cal.toggle("C"); };
-    document.getElementById("cForm").onsubmit = cal.save;
-
-    // (D5) INIT DRAW CALENDAR
+    // (C4) INIT DRAW CALENDAR
     cal.load(true);
-  }},
+  },
 
-  // (E) LOAD CALENDAR EVENTS FOR THE CURRENT MONTH/YEAR
+  // (D) LOAD CALENDAR EVENTS FOR THE CURRENT MONTH/YEAR
   sMth : null, // currently selected month
   sYear : null, // currently selected year
   sFirst : null, // first day (yyyymmdd) of selected month/year
@@ -142,29 +131,29 @@ var cal = {
   sDays : null, // number of days in selected month/year
   data : null, // events data for selected month/year
   load : (init) => {
-    // (E1) LOAD DATA FROM IDB
+    // (D1) LOAD DATA FROM IDB
     if (init) {
-      // (E1-1) GET SELECTED MONTH YEAR
-      // Note - Jan is 0 & Dec is 11
-      cal.sMth = document.getElementById("cMth").value;
-      cal.sYear = document.getElementById("cYear").value;
+      // (D1-1) GET SELECTED MONTH YEAR
+      // note - jan is 0 & dec is 11
+      cal.sMth = document.getElementById("cal-mth").value;
+      cal.sYear = document.getElementById("cal-year").value;
       let sMth = +cal.sMth + 1;
       cal.sDays = new Date(cal.sYear, sMth, 0).getDate();
 
-      // (E1-2) START & END OF MONTH
+      // (D1-2) START & END OF MONTH
       if (sMth < 10) { sMth = "0" + sMth; }
       cal.sFirst = parseInt(cal.sYear + sMth + "01");
       cal.sLast = parseInt(cal.sYear + sMth + cal.sDays);
 
-      // (E1-3) FETCH INIT
-      // INEFFICIENT. BUT NO OTHER WAYS TO DO COMPLEX SEARCH IN IDB.
+      // (D1-3) FETCH INIT
+      // inefficient. but no other ways to do complex search in idb.
       cal.ready = 0;
       cal.data = {};
-      document.getElementById("cWrap").innerHTML = "";
+      document.getElementById("cal-wrap").innerHTML = "";
       let rangeA = IDBKeyRange.bound(cal.sFirst, cal.sLast),
           rangeB = IDBKeyRange.lowerBound(cal.sLast, true);
 
-      // (E1-4) GET ALL START DATE THAT FALLS INSIDE MONTH/YEAR
+      // (D1-4) GET ALL START DATE THAT FALLS INSIDE MONTH/YEAR
       cal.iTX().index("start").openCursor(rangeA).onsuccess = (evt) => {
         let cursor = evt.target.result;
         if (cursor) {
@@ -175,7 +164,7 @@ var cal = {
         } else { cal.load(false); }
       };
 
-      // (E1-5) GET ALL END DATE THAT FALLS INSIDE MONTH/YEAR
+      // (D1-5) GET ALL END DATE THAT FALLS INSIDE MONTH/YEAR
       cal.iTX().index("end").openCursor(rangeA).onsuccess = (evt) => {
         let cursor = evt.target.result;
         if (cursor) {
@@ -186,7 +175,7 @@ var cal = {
         } else { cal.load(false); }
       };
 
-      // (E1-6) END DATE AFTER SELECTED MONTH/YEAR, BUT START IS BEFORE
+      // (D1-6) END DATE AFTER SELECTED MONTH/YEAR, BUT START IS BEFORE
       cal.iTX().index("end").openCursor(rangeB).onsuccess = (evt) => {
         let cursor = evt.target.result;
         if (cursor) {
@@ -198,21 +187,18 @@ var cal = {
       };
     }
 
-    // (E2) WAIT FOR DATA FETCH COMPLETION
+    // (D2) WAIT FOR ALL DATA FETCH TO COMPLETE
     else {
       cal.ready++;
-      if (cal.ready==3) {
-        cal.toggle("C");
-        cal.draw();
-      }
+      if (cal.ready==3) { cal.draw(); }
     }
   },
 
-  // (F) DRAW CALENDAR
+  // (E) DRAW CALENDAR
   draw : () => {
-    // (F1) PRE-CALCULATIONS
-    // Note - Jan is 0 & Dec is 11
-    // Note - Sun is 0 & Sat is 6
+    // (E1) PRE-CALCULATIONS
+    // note - jan is 0 & dec is 11
+    // note - sun is 0 & sat is 6
     let sMon = false, // week start on monday?
         sDay = new Date(cal.sYear, cal.sMth, 1).getDay(), // first day of the month
         eDay = new Date(cal.sYear, cal.sMth, cal.sDays).getDay(), // last day of the month
@@ -221,8 +207,8 @@ var cal = {
         nowYear = parseInt(now.getFullYear()), // current year
         nowDay = cal.sMth==nowMth && cal.sYear==nowYear ? now.getDate() : null ;
 
-    // (F2) DRAWING CALCULATIONS
-    // Blank squares before start of month
+    // (E2) DRAWING CALCULATIONS
+    // blank squares before start of month
     let squares = [];
     if (sMon && sDay != 1) {
       let blanks = sDay==0 ? 7 : sDay ;
@@ -232,10 +218,10 @@ var cal = {
       for (let i=0; i<sDay; i++) { squares.push("b"); }
     }
 
-    // Days of the month
+    // days of the month
     for (let i=1; i<=cal.sDays; i++) { squares.push(i); }
 
-    // Blank squares after end of month
+    // blank squares after end of month
     if (sMon && eDay != 0) {
       let blanks = eDay==6 ? 1 : 7-eDay;
       for (let i=0; i<blanks; i++) { squares.push("b"); }
@@ -245,47 +231,43 @@ var cal = {
       for (let i=0; i<blanks; i++) { squares.push("b"); }
     }
 
-    // (F3) DRAW HTML CALENDAR
-    // Get container
-    let container = document.getElementById("cWrap"),
+    // (E3) DRAW HTML CALENDAR
+    // get container
+    let container = document.getElementById("cal-wrap"),
         cTable = document.createElement("table");
-    cTable.id = "calendar";
+    cTable.id = "cal-table";
     container.innerHTML = "";
     container.appendChild(cTable);
 
-    // First row - Day names
-    let cRow = document.createElement("tr"),
+    // first row - day names
+    let cRow = cTable.insertRow(),
         days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
     if (sMon) { days.push(days.shift()); }
+    cRow.classList.add("cal-table-head");
     for (let d of days) {
-      let cCell = document.createElement("td");
+      let cCell = cRow.insertCell();
       cCell.innerHTML = d;
-      cRow.appendChild(cCell);
     }
-    cRow.classList.add("head");
-    cTable.appendChild(cRow);
 
-    // Days in Month
+    // days in month
     let total = squares.length;
-    cRow = document.createElement("tr");
-    cRow.classList.add("day");
+    cRow = cTable.insertRow(),
+    cRow.classList.add("cal-table-day");
     for (let i=0; i<total; i++) {
-      let cCell = document.createElement("td");
-      cCell.id = "cCell-" + squares[i];
+      let cCell = cRow.insertCell();
+      cCell.id = "cal-cell-" + squares[i];
       if (squares[i]=="b") { cCell.classList.add("blank"); }
       else {
         if (nowDay==squares[i]) { cCell.classList.add("today"); }
         cCell.innerHTML = `<div class="dd">${squares[i]}</div>`;
       }
-      cRow.appendChild(cCell);
       if (i!=0 && (i+1)%7==0) {
-        cTable.appendChild(cRow);
-        cRow = document.createElement("tr");
-        cRow.classList.add("day");
+        cRow = cTable.insertRow();
+        cRow.classList.add("cal-table-day");
       }
     }
 
-    // (F4) DRAW EVENTS
+    // (E4) DRAW EVENTS
     if (Object.keys(cal.data).length > 0) { for ([id, e] of Object.entries(cal.data)) {
       if (e.start < cal.sFirst) { e.start = cal.sFirst; }
       if (e.end > cal.sLast) { e.end = cal.sLast; }
@@ -298,35 +280,34 @@ var cal = {
         eRow.innerHTML = e.evt;
         eRow.className = "evt";
         eRow.style.background = e.color;
-        eRow.onclick = () => { cal.addEdit(eid); };
-        document.getElementById("cCell-" + i).appendChild(eRow);
+        eRow.onclick = () => { cal.show(eid); };
+        document.getElementById("cal-cell-" + i).appendChild(eRow);
       }
     }}
   },
 
-  // (G) TOGGLE BETWEEN "C"ALENDAR & "E"VENT FORM
-  mode : "C", // CURRENT "MODE"
-  toggle : (mode) => {
-    for (let e of document.getElementsByClassName("page"+(mode=="C"?"E":"C"))) {
-      e.classList.add("ninja");
-    }
-    for (let e of document.getElementsByClassName("page"+mode)) {
-      e.classList.remove("ninja");
-    }
-    if (mode=="E") {
-      document.getElementById("cHeadE").innerHTML = cal.id ? "Edit Event" : "Add Event";
-      if (!cal.id) { document.getElementById("cDel").classList.add("ninja"); }
-    } else { cal.id = null; }
-    cal.mode = mode;
+  // (F) SHOW ADD/EDIT EVENT FORM
+  id : null, // current event id
+  show : (id) => {
+    cal.id = id!==undefined ? +id : null;
+    window.location.hash = "form";
   },
 
-  // (H) SHOW ADD/EDIT NOTE FORM
-  id : null, // CURRENT EVENT ID
-  addEdit : (id) => {
-    // (H1) SET SELECTED ID - NULL OR UNDEFINED FOR ADD NEW
-    cal.id = id!==undefined ? parseInt(id) : null;
+  // (G) GET EVENT ENTRY
+  get : () => {
+    // (G1) GET HEADER HTML ELEMENTS
+    let htitle = document.getElementById("cal-form-title"),
+        hdel = document.getElementById("cal-form-del");
 
-    // (H2) IF EDIT - GET NOTE ENTRY
+    // (G2) SET TITLE + DELETE
+    htitle.innerHTML = cal.id==null ? "Add Event" : "Edit Event" ;
+    if (cal.id == null) { hdel.classList.add("ninja"); }
+    else {
+      hdel.onclick = () => { cal.del(); };
+      hdel.classList.remove("ninja");
+    }
+
+    // (G3) IF EDIT - GET NOTE ENTRY
     if (cal.id) {
       let req = cal.iTX().get(cal.id);
       req.onsuccess = () => {
@@ -335,60 +316,57 @@ var cal = {
             eEnd = e.end.toString();
         eStart = [eStart.substr(0,4), eStart.substr(4,2), eStart.substr(6,2)].join("-");
         eEnd = [eEnd.substr(0,4), eEnd.substr(4,2), eEnd.substr(6,2)].join("-");
-        document.getElementById("ceStart").value = eStart;
-        document.getElementById("ceEnd").value = eEnd;
-        document.getElementById("ceTxt").value = e.evt;
-        document.getElementById("ceColor").value = e.color;
-        cal.toggle("E");
-      };
-    }
 
-    // (H3) NEW ENTRY
-    else {
-      document.getElementById("ceStart").value = "";
-      document.getElementById("ceEnd").value = "";
-      document.getElementById("ceTxt").value = "";
-      document.getElementById("ceColor").value = "#e0eeff";
-      cal.toggle("E");
+        document.getElementById("cal-e-start").value = eStart;
+        document.getElementById("cal-e-end").value = eEnd;
+        document.getElementById("cal-e-txt").value = e.evt;
+        document.getElementById("cal-e-color").value = e.color;
+      };
+    } else {
+      document.getElementById("cal-e-start").value = "";
+      document.getElementById("cal-e-end").value = "";
+      document.getElementById("cal-e-txt").value = "";
+      document.getElementById("cal-e-color").value = "#e0eeff";
     }
   },
 
-  // (I) SAVE EVENT
+  // (H) SAVE EVENT
   save : () => {
-    // (I1) DATE CHECK
-    let eStart = document.getElementById("ceStart").value,
-        eEnd = document.getElementById("ceEnd").value;
+    // (H1) DATE CHECK
+    let eStart = document.getElementById("cal-e-start").value,
+        eEnd = document.getElementById("cal-e-end").value;
     if (new Date(eStart) > new Date(eEnd)) {
       alert("Start date cannot be later than end date");
       return false;
     }
 
-    // (I2) DATA TO SAVE
+    // (H2) DATA TO SAVE
     let data = {
       start : +eStart.replaceAll("-", ""),
       end : +eEnd.replaceAll("-", ""),
-      evt : document.getElementById("ceTxt").value,
-      color : document.getElementById("ceColor").value
+      evt : document.getElementById("cal-e-txt").value,
+      color : document.getElementById("cal-e-color").value
     };
 
-    // (I3) EDIT ENTRY
+    // (H3) SAVE ENTRY
     if (cal.id) {
       data.id = cal.id;
       cal.iTX().put(data);
-    }
+    } else { cal.iTX().add(data); }
 
-    // (I4) NEW ENTRY
-    else { cal.iTX().add(data); }
-
-    // (I5) DONE!
-    cal.load(true);
+    // (H4) DONE!
+    cb.info("Event saved");
+    cal.id = null;
+    window.location.hash = "home";
     return false;
   },
 
   // (J) DELETE EVENT
   del : () => { if (confirm("Delete Event?")) {
     cal.iTX().delete(cal.id);
-    cal.load(true);
+    cb.info("Event deleted");
+    cal.id = null;
+    window.location.hash = "home";
   }}
 };
-window.addEventListener("load", cal.iniA);
+window.addEventListener("DOMContentLoaded", cal.init);

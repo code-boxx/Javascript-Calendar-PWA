@@ -1,13 +1,21 @@
 // (A) FILES TO CACHE
 const cName = "MyCalendar",
 cFiles = [
+  // (A1) ICONS + FONTS
   "assets/favicon.png",
   "assets/icon-512.png",
-  "assets/js-calendar.css",
-  "assets/js-calendar.js",
   "assets/maticon.woff2",
+  // (A2) CSS
+  "assets/js-calendar.css",
+  // (A3) JS
+  "assets/cb.js",
+  "assets/js-calendar.js",
+  // (A4) MANIFEST
   "js-calendar-manifest.json",
-  "js-calendar.html"
+  // (A5) PAGES
+  "js-calendar.html",
+  "js-notes.html",  "form.inc",
+  "home.inc"
 ];
 
 // (B) CREATE/INSTALL CACHE
