@@ -128,6 +128,7 @@ div.error {
 }
 
 /* (F4) ADD/EDIT EVENT */
+#cal-form { background: var(--color-white); }
 #cal-e-txt {
   min-height: 80px;
   resize: none;
