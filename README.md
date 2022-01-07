@@ -1,7 +1,29 @@
----
-## LICENSE
----
+## JS CALENDAR PWA
+This is a Calendar Progressive Web App (PWA) made in pure HTML, CSS, Javascript. Yes, it is capable of running offline completely.
+<br><br>
 
+
+## SCREENSHOTS
+<p float="left">
+  <img width="250" style="inline-block" src="https://code-boxx.com/wp-content/uploads/2022/01/js-cal-pwa-1.png">
+  <img width="250" style="inline-block" src="https://code-boxx.com/wp-content/uploads/2022/01/js-cal-pwa-2a.png">
+  <img width="250" style="inline-block" src="https://code-boxx.com/wp-content/uploads/2022/01/js-cal-pwa-3.png">
+</p><br>
+
+
+## REQUIREMENTS
+1) "Grade A" browser. With support for service worker, indexed database, cache storage.
+2) https:// is required for the features to work.
+3) http://localhost works fine for testing too.
+<br><br>
+
+
+## DOCUMENTATION
+Visit https://code-boxx.com/javascript-calendar-pwa/ for the documentation.
+<br><br>
+
+
+## LICENSE
 Copyright by Code Boxx
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,17 +43,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-
----
-## REQUIREMENTS
----
-1) "Grade A" browser. With support for service worker, indexed database, cache storage.
-2) https:// is required for the features to work.
-3) http://localhost works fine for testing too.
-
-
----
-## DOCUMENTATION
----
-Please visit https://code-boxx.com/javascript-calendar-pwa/ for the documentation.
