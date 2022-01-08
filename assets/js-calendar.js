@@ -1,91 +1,97 @@
 var cal = {
-  // (A) INIT APP
-  iDB : null, iTX : null, iName : "MyCalendar", // idb object & transaction
-  init : () => {
-    // (A1) HTML + FLAGS STUFF
-    let pass = true,
-        page = document.getElementById("cb-main"),
-        err = (msg) => {
-          let row = document.createElement("div");
-          row.className = "error";
-          row.innerHTML = msg;
-          page.appendChild(row);
-        };
-
-    // (A2) REQUIREMENT - INDEXED DB
-    window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-    if (!window.indexedDB) {
-      err("Your browser does not support indexed database.");
-      pass = false;
-    }
-
-    // (A3) REQUIREMENT - SERVICE WORKER
-    if (!"serviceWorker" in navigator) {
-      err("Your browser does not support service workers.");
-      pass = false;
-    }
-
-    // (A4) REQUIREMENT - CACHE STORAGE
-    if (!caches) {
-      err("Your browser does not support cache storage.");
-      pass = false;
-    }
-
-    // (A5) SERVICE WORKER
-    navigator.serviceWorker.register("js-calendar-sw.js")
-    .then((reg) => { cal.start(); })
-    .catch((err) => {
-      err("Service worker init error - " + err.message);
-      console.error(err);
-    });
-
-    // (A6) INDEXED DATABASE
-    // (A6-1) OPEN "MYCALENDAR" DATABASE
-    let req = window.indexedDB.open(cal.iName, 1);
-
-    // (A6-2) ON DATABASE ERROR
-    req.onerror = (evt) => {
-      err("Indexed DB init error - " + evt.message);
-      console.error(evt);
-    };
-
-    // (A6-3) UPGRADE NEEDED
-    req.onupgradeneeded = (evt) => {
-      // INIT UPGRADE
-      cal.iDB = evt.target.result;
-      cal.iDB.onerror = (evt) => {
-        err("Indexed DB upgrade error - " + evt.message);
-        console.error(evt);
-      };
-
-      // VERSION 1
-      if (evt.oldVersion < 1) {
-        let store = cal.iDB.createObjectStore(cal.iName, {
-          keyPath: "id",
-          autoIncrement: true
-        });
-        store.createIndex("start", "start", { unique: false });
-        store.createIndex("end", "end", { unique: false });
-      }
-    };
-
-    // (A6-4) OPEN DATABASE OK - REGISTER IDB OBJECTS
-    req.onsuccess = (evt) => {
-      cal.iDB = evt.target.result;
-      cal.iTX = () => {
-        return cal.iDB
-        .transaction(cal.iName, "readwrite")
-        .objectStore(cal.iName);
-      };
-      cal.start();
-    };
+  // (A) HELPER FUNCTION TO GENERATE ERROR MESSAGE
+  err : (msg) => {
+    let row = document.createElement("div");
+    row.className = "error";
+    row.innerHTML = msg;
+    document.getElementById("cb-main").appendChild(row);
   },
 
-  // (B) START APP
+  // (B) INIT APP
+  iDB : null, iTX : null, iName : "MyCalendar", // idb object & transaction
   ready : 0, // number of ready components
-  start : () => {
-    cal.ready++;
-    if (cal.ready==2) { cb.load(); }
+  init : (ready) => {
+    // (B1) ALL CHECKS & COMPONENTS GOOD TO GO?
+    if (ready==1) {
+      cal.ready++;
+      if (cal.ready==2) { cb.load(); }
+    }
+
+    // (B2) REQUIREMENT CHECKS & SETUP
+    else {
+      // (B2-1) REQUIREMENT - INDEXED DB
+      let pass = true;
+      window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+      if (!window.indexedDB) {
+        cal.err("Your browser does not support indexed database.");
+        pass = false;
+      }
+
+      // (B2-2) REQUIREMENT - SERVICE WORKER
+      if (!"serviceWorker" in navigator) {
+        cal.err("Your browser does not support service workers.");
+        pass = false;
+      }
+
+      // (B2-3) REQUIREMENT - CACHE STORAGE
+      if (!"caches" in window) {
+        cal.err("Your browser does not support cache storage.");
+        pass = false;
+      }
+
+      // (B2-4) SERVICE WORKER
+      if (pass) {
+        navigator.serviceWorker.register("js-calendar-sw.js")
+        .then((reg) => { cal.init(1); })
+        .catch((err) => {
+          cal.err("Service worker init error - " + err.message);
+          console.error(err);
+        });
+      }
+
+      // (B2-5) INDEXED DATABASE
+      if (pass) {
+        // OPEN "MYCALENDAR" DATABASE
+        let req = window.indexedDB.open(cal.iName, 1);
+
+        // ON DATABASE ERROR
+        req.onerror = (evt) => {
+          cal.err("Indexed DB init error - " + evt.message);
+          console.error(evt);
+        };
+
+        // UPGRADE NEEDED
+        req.onupgradeneeded = (evt) => {
+          // INIT UPGRADE
+          cal.iDB = evt.target.result;
+          cal.iDB.onerror = (evt) => {
+            cal.err("Indexed DB upgrade error - " + evt.message);
+            console.error(evt);
+          };
+
+          // VERSION 1
+          if (evt.oldVersion < 1) {
+            let store = cal.iDB.createObjectStore(cal.iName, {
+              keyPath: "id",
+              autoIncrement: true
+            });
+            store.createIndex("start", "start", { unique: false });
+            store.createIndex("end", "end", { unique: false });
+          }
+        };
+
+        // OPEN DATABASE OK - REGISTER IDB OBJECTS
+        req.onsuccess = (evt) => {
+          cal.iDB = evt.target.result;
+          cal.iTX = () => {
+            return cal.iDB
+            .transaction(cal.iName, "readwrite")
+            .objectStore(cal.iName);
+          };
+          cal.init(1);
+        };
+      }
+    }
   },
 
   // (C) PREPARE CALENDAR INTERFACE
@@ -361,7 +367,7 @@ var cal = {
     return false;
   },
 
-  // (J) DELETE EVENT
+  // (I) DELETE EVENT
   del : () => { if (confirm("Delete Event?")) {
     cal.iTX().delete(cal.id);
     cb.info("Event deleted");
