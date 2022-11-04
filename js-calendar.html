@@ -1,18 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- TITLE + CHARSET + DESCRIPTION + VIEWPORT + FAVICON -->
+    <!-- TITLE, DESC, CHARSET, VIEWPORT -->
     <title>Offline JS Calendar</title>
     <meta charset="utf-8">
     <meta name="description" content="Offline Javascript Calendar App">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+
+    <!-- WEB APP & ICONS -->
     <link rel="icon" href="assets/favicon.png" type="image/png">
-
-    <!-- WEB APP MANIFEST -->
-    <!-- https://web.dev/add-manifest/ -->
-    <link rel="manifest" href="js-calendar-manifest.json">
-
-    <!-- ANDROID + CHROME + APPLE + WINDOWS APP -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="white">
     <link rel="apple-touch-icon" href="assets/icon-512.png">
@@ -22,19 +18,64 @@
     <meta name="msapplication-TileImage" content="assets/icon-512.png">
     <meta name="msapplication-TileColor" content="#ffffff">
 
+    <!-- WEB APP MANIFEST -->
+    <!-- https://web.dev/add-manifest/ -->
+    <link rel="manifest" href="CB-manifest.json">
+
+    <!-- SERVICE WORKER -->
+    <script>if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("CB-worker.js");
+    }</script>
+
     <!-- STYLESHEET + JAVASCRIPT -->
     <link rel="stylesheet" href="assets/js-calendar.css">
     <script defer src="assets/js-calendar.js"></script>
-    <script defer src="assets/cb.js"></script>
   </head>
   <body>
-    <!-- (A) MAIN CONTENTS -->
-    <div id="cb-main"></div>
-
-    <!-- (B) INFO BOX -->
-    <div id="cb-info">
-      <div id="cb-info-ico" class="mi"></div>
-      <div id="cb-info-txt"></div>
+    <!-- (A) PERIOD SELECTOR -->
+    <div id="calHead">
+      <div id="calPeriod">
+        <select id="calMonth"></select>
+        <input id="calYear" type="number">
+      </div>
+      <input id="calAdd" type="button" class="mi" value="add">
     </div>
+
+    <!-- (B) CALENDAR WRAPPER -->
+    <div id="calWrap">
+      <div id="calDays"></div>
+      <div id="calBody"></div>
+    </div>
+
+    <!-- (C) EVENT FORM -->
+    <dialog id="calForm"><form method="dialog">
+      <h2 class="evt100">CALENDAR EVENT</h2>
+      <div class="evt50">
+        <label>Start</label>
+        <input id="evtStart" type="datetime-local" required>
+      </div>
+      <div class="evt50">
+        <label>End</label>
+        <input id="evtEnd" type="datetime-local" required>
+      </div>
+      <div class="evt50">
+        <label>Text Color</label>
+        <input id="evtColor" type="color" value="#000000" required>
+      </div>
+      <div class="evt50">
+        <label>Background Color</label>
+        <input id="evtBG" type="color" value="#ffdbdb" required>
+      </div>
+      <div class="evt100">
+        <label>Event</label>
+        <input id="evtTxt" type="text" required>
+      </div>
+      <div class="evt100">
+        <input type="hidden" id="evtID">
+        <input type="button" id="evtCX" class="mi" value="clear">
+        <input type="button" id="evtDel" class="mi" value="delete">
+        <input type="submit" id="evtSave" class="mi" value="save">
+      </div>
+    </form></dialog>
   </body>
 </html>
