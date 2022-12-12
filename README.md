@@ -1,5 +1,5 @@
-## JS CALENDAR PWA
-This is a Calendar Progressive Web App (PWA) made in pure HTML, CSS, Javascript. Yes, it is capable of running offline completely.
+## JS EVENTS CALENDAR PWA
+This is an Events Calendar Progressive Web App (PWA) made in pure HTML, CSS, Javascript. Yes, it is installable and capable of running offline completely.
 <br><br>
 
 ## SCREENSHOTS
