@@ -3,6 +3,7 @@ const cName = "JSCalendar",
 cFiles = [
   "assets/favicon.png",
   "assets/icon-512.png",
+  "assets/HEAD-js-cal.jpg",
   "assets/maticon.woff2",
   "CB-manifest.json",
   "assets/js-calendar.css",

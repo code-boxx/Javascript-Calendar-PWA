@@ -128,7 +128,7 @@ var cal = {
     cal.hYear.onchange = cal.load;
     document.getElementById("calAdd").onclick = () => cal.show();
     cal.hForm.onsubmit = () => cal.save();
-    document.getElementById("evtCX").onclick = () => cal.hFormWrap.open = false;
+    document.getElementById("evtCX").onclick = () => cal.hFormWrap.close();
     cal.hfDel.onclick = cal.del;
 
     // (C4) DRAW DAY NAMES
@@ -257,7 +257,7 @@ var cal = {
     for (let i=1; i<=cal.sDIM; i++) {
       rowMap[i] = { r : rowNum, c : cellNum };
       celler(i);
-      if (cellNum%7==0) { rowNum++; rower(); }
+      if (cellNum%7==0 && i!=cal.sDIM) { rowNum++; rower(); }
       cellNum++;
     }
 
@@ -276,8 +276,10 @@ var cal = {
       // (F3-1) EVENT START & END DAY
       let sd = new Date(cal.toISODate(evt.s)),
           ed = new Date(cal.toISODate(evt.e));
-      sd = sd.getMonth()+1 < cal.sMth ? 1 : sd.getDate();
-      ed = ed.getMonth()+1 > cal.sMth ? cal.sDIM : ed.getDate();
+      if (sd.getFullYear() < nowYear) { sd = 1; }
+      else { sd = sd.getMonth()+1 < cal.sMth ? 1 : sd.getDate(); }
+      if (ed.getFullYear() > nowYear) { ed = cal.sDIM; }
+      else { ed = ed.getMonth()+1 > cal.sMth ? cal.sDIM : ed.getDate(); }
 
       // (F3-2) "MAP" ONTO HTML CALENDAR
       cell = {}; rowNum = 0;
@@ -322,7 +324,7 @@ var cal = {
       cal.hfID.value = "";
       cal.hfDel.style.display = "none";
     }
-    cal.hFormWrap.open = true;
+    cal.hFormWrap.show();
   },
 
   // (H) SAVE EVENT
@@ -350,7 +352,7 @@ var cal = {
     // (H3) SAVE
     if (data.id) { cal.iTX().put(data); }
     else { cal.iTX().add(data); }
-    cal.hFormWrap.open = false;
+    cal.hFormWrap.close();
     cal.load();
     return false;
   },
@@ -358,7 +360,7 @@ var cal = {
   // (I) DELETE EVENT
   del : () => { if (confirm("Delete Event?")) {
     cal.iTX().delete(parseInt(cal.hfID.value));
-    cal.hFormWrap.open = false;
+    cal.hFormWrap.close();
     cal.load();
   }}
 };

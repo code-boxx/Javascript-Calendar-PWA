@@ -4,9 +4,9 @@ This is an Events Calendar Progressive Web App (PWA) made in pure HTML, CSS, Jav
 
 ## SCREENSHOTS
 <p float="left">
-  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-calendar-pwa/blob/main/assets/js-cal-1.png">
-  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-calendar-pwa/blob/main/assets/js-cal-2.png">
-  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-calendar-pwa/blob/main/assets/js-cal-3.png">
+  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-calendar-pwa/blob/main/assets/js-cal-1a.png">
+  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-calendar-pwa/blob/main/assets/js-cal-2a.png">
+  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-calendar-pwa/blob/main/assets/js-cal-3a.png">
 </p><br>
 
 ## REQUIREMENTS

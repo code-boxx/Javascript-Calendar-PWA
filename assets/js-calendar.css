@@ -8,13 +8,38 @@
   font-family: Arial, Helvetica, sans-serif;
   box-sizing: border-box;
 }
-body { padding: 0; margin: 0; }
+body {
+  position: relative;
+  padding: 0; margin: 0;
+  overflow-x: hidden;
+}
 
 /* (A3) COLORS */
 :root {
   --bg-color-a: #3b39af; /* page header + form label */
   --bg-color-b: #404040; /* calendar header */
   --bg-color-c: #d73a3a; /* buttons */
+}
+
+/* (A4) SHARED POPUP */
+#calForm, #aboutWrap {
+  position:absolute; top: 0; left: 0; z-index: 999;
+  width: 100vw; height: 100%; min-height: 100vh;
+  padding: 0; margin: 0; border: 0;
+  background: rgba(0,0,0,0.5);
+}
+#calForm:is([open]), #calForm form, #aboutWrap:is([open]) {
+  display: flex; flex-wrap: wrap;
+  align-items: center; justify-content: center;
+}
+#evtCX, #aboutCX {
+  position: absolute;
+  top: 0; right: 0;
+  padding: 10px;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--bg-color-c);
+  cursor: pointer;
 }
 
 /* (B) PERIOD SELECTOR */
@@ -86,17 +111,8 @@ body { padding: 0; margin: 0; }
 .calToday { background: #feffd3; }
 
 /* (D) EVENT FORM */
-#calForm {
-  position:fixed; top: 0; left: 0; z-index: 999;
-  width: 100vw; height: 100vh;
-  padding: 0; margin: 0; border: 0;
-  background: rgba(0,0,0,0.5);
-}
-#calForm:is([open]), #calForm form {
-  display: flex; flex-wrap: wrap;
-  align-items: center; justify-content: center;
-}
 #calForm form {
+  position: relative;
   width: 450px; padding: 15px;
   border-radius: 10px;
   background: #fff;
@@ -124,4 +140,30 @@ body { padding: 0; margin: 0; }
   border: 0; padding: 10px; margin: 10px 2px 0 0;
   color: #fff; background: var(--bg-color-c);
   cursor: pointer; font-size:24px;
+}
+
+/* (X) ABOUT */
+#aboutFoot {
+  padding : 20px 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  color: #9b9b9b;
+  cursor: pointer;
+}
+#aboutWrap:is([open]) #aboutPop {
+  position: relative;
+  background: #fff;
+}
+#aboutCX {
+  border-radius: 50%;
+  background: #fff;
+}
+#aboutHead {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+#aboutLinks {
+  padding: 20px;
 }
