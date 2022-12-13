@@ -276,9 +276,9 @@ var cal = {
       // (F3-1) EVENT START & END DAY
       let sd = new Date(cal.toISODate(evt.s)),
           ed = new Date(cal.toISODate(evt.e));
-      if (sd.getFullYear() < nowYear) { sd = 1; }
+      if (sd.getFullYear() < cal.sYear) { sd = 1; }
       else { sd = sd.getMonth()+1 < cal.sMth ? 1 : sd.getDate(); }
-      if (ed.getFullYear() > nowYear) { ed = cal.sDIM; }
+      if (ed.getFullYear() > cal.sYear) { ed = cal.sDIM; }
       else { ed = ed.getMonth()+1 > cal.sMth ? cal.sDIM : ed.getDate(); }
 
       // (F3-2) "MAP" ONTO HTML CALENDAR
