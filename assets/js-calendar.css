@@ -43,8 +43,10 @@ body {
 }
 
 /* (B) PERIOD SELECTOR */
+#calHead, #calPeriod {
+  display: flex; align-items: stretch;
+}
 #calHead {
-  display: flex; align-items: center;
   padding: 15px;
   background: var(--bg-color-a);
 }
@@ -57,7 +59,7 @@ body {
 }
 #calHead option { color: #000; }
 #calYear {
-  width: 100px;
+  width: 80px;
   margin-left: 10px;
 }
 #calHead #calAdd {

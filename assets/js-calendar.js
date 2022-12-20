@@ -126,6 +126,8 @@ var cal = {
     // (C3) ATTACH CONTROLS
     cal.hMth.onchange = cal.load;
     cal.hYear.onchange = cal.load;
+    document.getElementById("calBack").onclick = () => cal.pshift();
+    document.getElementById("calNext").onclick = () => cal.pshift(1);
     document.getElementById("calAdd").onclick = () => cal.show();
     cal.hForm.onsubmit = () => cal.save();
     document.getElementById("evtCX").onclick = () => cal.hFormWrap.close();
@@ -145,9 +147,21 @@ var cal = {
     cal.load();
   },
 
-  // (D) LOAD EVENTS DATA FOR MONTH/YEAR
+  // (D) SHIFT CURRENT PERIOD BY 1 MONTH
+  pshift : forward => {
+    cal.sMth = parseInt(cal.hMth.value);
+    cal.sYear = parseInt(cal.hYear.value);
+    if (forward) { cal.sMth++; } else { cal.sMth--; }
+    if (cal.sMth > 12) { cal.sMth = 1; cal.sYear++; }
+    if (cal.sMth < 1) { cal.sMth = 12; cal.sYear--; }
+    cal.hMth.value = cal.sMth;
+    cal.hYear.value = cal.sYear;
+    cal.load();
+  },
+
+  // (E) LOAD EVENTS DATA FOR MONTH/YEAR
   load : () => {
-    // (D1) SET SELECTED PERIOD
+    // (E1) SET SELECTED PERIOD
     cal.sMth = parseInt(cal.hMth.value);
     cal.sYear = parseInt(cal.hYear.value);
     cal.sDIM = new Date(cal.sYear, cal.sMth, 0).getDate();
@@ -158,14 +172,14 @@ var cal = {
     cal.sF = parseInt(String(cal.sYear) + String(m) + "010000");
     cal.sL = parseInt(String(cal.sYear) + String(m) + String(cal.sDIM) + "2359");
 
-    // (D2) FETCH INIT
+    // (E2) FETCH INIT
     // inefficient. but no other ways to do complex search in idb.
     cal.ready = 0;
     cal.events = {};
     let rangeA = IDBKeyRange.bound(cal.sF, cal.sL),
         rangeB = IDBKeyRange.lowerBound(cal.sL, true);
 
-    // (D3) GET ALL START DATE THAT FALLS INSIDE MONTH/YEAR
+    // (E3) GET ALL START DATE THAT FALLS INSIDE MONTH/YEAR
     cal.iTX().index("s").openCursor(rangeA).onsuccess = evt => {
       let cursor = evt.target.result;
       if (cursor) {
@@ -176,7 +190,7 @@ var cal = {
       } else { cal.loading(); }
     };
 
-    // (D4) GET ALL END DATE THAT FALLS INSIDE MONTH/YEAR
+    // (E4) GET ALL END DATE THAT FALLS INSIDE MONTH/YEAR
     cal.iTX().index("e").openCursor(rangeA).onsuccess = evt => {
       let cursor = evt.target.result;
       if (cursor) {
@@ -187,7 +201,7 @@ var cal = {
       } else { cal.loading(); }
     };
 
-    // (D5) END DATE AFTER SELECTED MONTH/YEAR, BUT START IS BEFORE
+    // (E5) END DATE AFTER SELECTED MONTH/YEAR, BUT START IS BEFORE
     cal.iTX().index("e").openCursor(rangeB).onsuccess = evt => {
       let cursor = evt.target.result;
       if (cursor) {
@@ -199,15 +213,15 @@ var cal = {
     };
   },
 
-  // (E) LOADING CHECK
+  // (F) LOADING CHECK
   loading : () => {
     cal.ready++;
     if (cal.ready==3) { cal.draw(); }
   },
 
-  // (F) DRAW CALENDAR
+  // (G) DRAW CALENDAR
   draw : () => {
-    // (F1) CALCULATE DAY MONTH YEAR
+    // (G1) CALCULATE DAY MONTH YEAR
     // note - jan is 0 & dec is 11 in js
     // note - sun is 0 & sat is 6 in js
     let now = new Date(), // current date
@@ -215,8 +229,8 @@ var cal = {
         nowYear = parseInt(now.getFullYear()), // current year
         nowDay = cal.sMth==nowMth && cal.sYear==nowYear ? now.getDate() : null ;
 
-    // (F2) DRAW CALENDAR ROWS & CELLS
-    // (F2-1) INIT + HELPER FUNCTIONS
+    // (G2) DRAW CALENDAR ROWS & CELLS
+    // (G2-1) INIT + HELPER FUNCTIONS
     let rowA, rowB, rowC, rowMap = {}, rowNum = 1,
         cell, cellNum = 1,
     rower = () => {
@@ -244,7 +258,7 @@ var cal = {
     };
     cal.hCB.innerHTML = ""; rower();
 
-    // (F2-2) BLANK CELLS BEFORE START OF MONTH
+    // (G2-2) BLANK CELLS BEFORE START OF MONTH
     if (cal.mon && cal.sFD != 1) {
       let blanks = cal.sFD==0 ? 7 : cal.sFD ;
       for (let i=1; i<blanks; i++) { celler(); cellNum++; }
@@ -253,7 +267,7 @@ var cal = {
       for (let i=0; i<cal.sFD; i++) { celler(); cellNum++; }
     }
 
-    // (F2-3) DAYS OF THE MONTH
+    // (G2-3) DAYS OF THE MONTH
     for (let i=1; i<=cal.sDIM; i++) {
       rowMap[i] = { r : rowNum, c : cellNum };
       celler(i);
@@ -261,7 +275,7 @@ var cal = {
       cellNum++;
     }
 
-    // (F2-4) BLANK CELLS AFTER END OF MONTH
+    // (G2-4) BLANK CELLS AFTER END OF MONTH
     if (cal.mon && cal.sLD != 0) {
       let blanks = cal.sLD==6 ? 1 : 7-cal.sLD;
       for (let i=0; i<blanks; i++) { celler(); cellNum++; }
@@ -271,9 +285,9 @@ var cal = {
       for (let i=0; i<blanks; i++) { celler(); cellNum++; }
     }
 
-    // (F3) DRAW EVENTS
+    // (G3) DRAW EVENTS
     if (Object.keys(cal.events).length > 0) { for (let [id,evt] of Object.entries(cal.events)) {
-      // (F3-1) EVENT START & END DAY
+      // (G3-1) EVENT START & END DAY
       let sd = new Date(cal.toISODate(evt.s)),
           ed = new Date(cal.toISODate(evt.e));
       if (sd.getFullYear() < cal.sYear) { sd = 1; }
@@ -281,7 +295,7 @@ var cal = {
       if (ed.getFullYear() > cal.sYear) { ed = cal.sDIM; }
       else { ed = ed.getMonth()+1 > cal.sMth ? cal.sDIM : ed.getDate(); }
 
-      // (F3-2) "MAP" ONTO HTML CALENDAR
+      // (G3-2) "MAP" ONTO HTML CALENDAR
       cell = {}; rowNum = 0;
       for (let i=sd; i<=ed; i++) {
         if (rowNum!=rowMap[i]["r"]) {
@@ -291,7 +305,7 @@ var cal = {
         if (cell[rowNum]) { cell[rowNum]["e"] = rowMap[i]["c"]; }
       }
 
-      // (F3-3) DRAW HTML EVENT ROW
+      // (G3-3) DRAW HTML EVENT ROW
       for (let [r,c] of Object.entries(cell)) {
         let o = c.s - 1 - ((r-1) * 7), // event cell offset
             w = c.e - c.s + 1; // event cell width
@@ -309,7 +323,7 @@ var cal = {
     }}
   },
 
-  // (G) SHOW EVENT FORM
+  // (H) SHOW EVENT FORM
   show : id => {
     if (id) {
       cal.hfID.value = id;
@@ -327,9 +341,9 @@ var cal = {
     cal.hFormWrap.show();
   },
 
-  // (H) SAVE EVENT
+  // (I) SAVE EVENT
   save : () => {
-    // (H1) COLLECT DATA
+    // (I1) COLLECT DATA
     // s & e : start & end date
     // c & b : text & background color
     // t : event text
@@ -343,13 +357,13 @@ var cal = {
     if (cal.hfID.value != "") { data.id = parseInt(cal.hfID.value); }
     console.log(data);
 
-    // (H2) DATE CHECK
+    // (I2) DATE CHECK
     if (new Date(data.s) > new Date(data.e)) {
       alert("Start date cannot be later than end date!");
       return false;
     }
 
-    // (H3) SAVE
+    // (I3) SAVE
     if (data.id) { cal.iTX().put(data); }
     else { cal.iTX().add(data); }
     cal.hFormWrap.close();
@@ -357,7 +371,7 @@ var cal = {
     return false;
   },
 
-  // (I) DELETE EVENT
+  // (J) DELETE EVENT
   del : () => { if (confirm("Delete Event?")) {
     cal.iTX().delete(parseInt(cal.hfID.value));
     cal.hFormWrap.close();
