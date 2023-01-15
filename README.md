@@ -2,24 +2,24 @@
 This is an Events Calendar Progressive Web App (PWA) made with pure HTML, CSS, Javascript. Yes, it is installable and serverless - Capable of running offline completely.
 <br><br>
 
-## SCREENSHOTS
+## :camera: SCREENSHOTS
 <p float="left">
   <img width="250" src="https://github.com/code-boxx/js-calendar-pwa/blob/main/assets/js-cal-1c.png">
   <img width="250" src="https://github.com/code-boxx/js-calendar-pwa/blob/main/assets/js-cal-2c.png">
   <img width="250" src="https://github.com/code-boxx/js-calendar-pwa/blob/main/assets/js-cal-3d.png">
 </p><br>
 
-## REQUIREMENTS
+## :ballot_box_with_check: REQUIREMENTS
 1) "Grade A" browser. With support for service worker, indexed database, cache storage.
 2) https:// is required for the features to work properly.
 3) http://localhost works fine for testing too.
 <br><br>
 
-## DOCUMENTATION
+## :bulb: DOCUMENTATION
 Visit https://code-boxx.com/javascript-calendar-pwa/ for the documentation.
 <br><br>
 
-## LICENSE
+## :newspaper: LICENSE
 Copyright by Code Boxx
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
