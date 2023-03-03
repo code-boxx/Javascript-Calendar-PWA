@@ -22,13 +22,9 @@
     <!-- https://web.dev/add-manifest/ -->
     <link rel="manifest" href="CB-manifest.json">
 
-    <!-- SERVICE WORKER -->
-    <script>if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("CB-worker.js");
-    }</script>
-
-    <!-- STYLESHEET + JAVASCRIPT -->
+    <!-- CSS + JS -->
     <link rel="stylesheet" href="assets/js-calendar.css">
+    <script defer src="assets/js-calendar-db.js"></script>
     <script defer src="assets/js-calendar.js"></script>
   </head>
   <body>
@@ -88,7 +84,7 @@
       <div id="aboutCX" class="mi" onclick="document.getElementById('aboutWrap').close()">
         clear
       </div>
-      <img src="assets/HEAD-js-cal.jpg" id="aboutHead">
+      <img src="assets/head-pwa-calendar.webp" id="aboutHead">
 
       <div id="aboutLinks">
         <h3>Links & Documentation</h3>

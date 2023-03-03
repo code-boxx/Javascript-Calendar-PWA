@@ -6,10 +6,11 @@ self.addEventListener("install", evt => {
     .then(cache => cache.addAll([
       "assets/favicon.png",
       "assets/icon-512.png",
-      "assets/HEAD-js-cal.jpg",
+      "assets/head-pwa-calendar.webp",
       "assets/maticon.woff2",
       "CB-manifest.json",
       "assets/js-calendar.css",
+      "assets/js-calendar-db.js",
       "assets/js-calendar.js",
       "js-calendar.html"
     ]))
