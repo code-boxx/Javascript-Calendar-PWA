@@ -4,9 +4,9 @@ This is an events calendar made with pure HTML, CSS, JS. It is a tutorial/projec
 
 ## :camera: SCREENSHOTS
 <p float="left">
-  <img width="250" src="https://github.com/code-boxx/js-calendar-pwa/blob/main/assets/js-cal-1.png">
-  <img width="250" src="https://github.com/code-boxx/js-calendar-pwa/blob/main/assets/js-cal-2.png">
-  <img width="250" src="https://github.com/code-boxx/js-calendar-pwa/blob/main/assets/js-cal-3.png">
+  <img width="250" src="https://github.com/code-boxx/Javascript-Calendar-PWA/blob/main/assets/js-cal-1.png">
+  <img width="250" src="https://github.com/code-boxx/Javascript-Calendar-PWA/blob/main/assets/js-cal-2.png">
+  <img width="250" src="https://github.com/code-boxx/Javascript-Calendar-PWA/blob/main/assets/js-cal-3.png">
 </p><br>
 
 ## :ballot_box_with_check: REQUIREMENTS
