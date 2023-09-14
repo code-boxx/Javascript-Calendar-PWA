@@ -20,8 +20,7 @@ var cal = {
   hfColor : null, hfBG : null,
   hfDel : null,
 
-  // (A3) HELPER FUNCTIONS
-  toDate : date => parseInt(date.replace(/-|T|:/g, "")),
+  // (A3) HELPER FUNCTION - TRANSITION
   transit : swap => {
     if (document.startViewTransition) { document.startViewTransition(swap); }
     else { swap(); }
