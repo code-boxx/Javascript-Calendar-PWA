@@ -5,13 +5,15 @@ self.addEventListener("install", evt => {
     caches.open("JSCalendar")
     .then(cache => cache.addAll([
       "assets/favicon.png",
-      "assets/icon-512.png",
       "assets/head-pwa-calendar.webp",
-      "assets/maticon.woff2",
-      "CB-manifest.json",
+      "assets/ico-512.png",
+      "assets/icomoon.woff2",
       "assets/js-calendar.css",
-      "assets/js-calendar-db.js",
       "assets/js-calendar.js",
+      "assets/js-calendar-db.js",
+      "assets/sql-wasm.js",
+      "assets/sql-wasm.wasm",
+      "CB-manifest.json",
       "js-calendar.html"
     ]))
     .catch(err => console.error(err))

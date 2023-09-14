@@ -24,6 +24,7 @@
 
     <!-- CSS + JS -->
     <link rel="stylesheet" href="assets/js-calendar.css">
+    <script defer src="assets/sql-wasm.js"></script>
     <script defer src="assets/js-calendar-db.js"></script>
     <script defer src="assets/js-calendar.js"></script>
   </head>
@@ -31,12 +32,12 @@
     <!-- (A) HEADER -->
     <div id="calHead">
       <div id="calPeriod">
-        <input id="calBack" type="button" class="mi" value="navigate_before">
+        <button id="calBack" type="button" class="icon-circle-left"></button>
         <select id="calMonth"></select>
         <input id="calYear" type="number">
-        <input id="calNext" type="button" class="mi" value="navigate_next">
+        <button id="calNext" type="button" class="icon-circle-right"></button>
       </div>
-      <input id="calAdd" type="button" class="mi" value="add">
+      <button id="calAdd" type="button" class="icon-plus"></button>
     </div>
 
     <!-- (B) CALENDAR WRAPPER -->
@@ -47,7 +48,7 @@
 
     <!-- (C) EVENT FORM -->
     <dialog id="calForm"><form method="dialog">
-      <div id="evtCX" class="mi">clear</div>
+      <div id="evtCX" class="icon-cross"></div>
       <h2 class="evt100">CALENDAR EVENT</h2>
       <div class="evt50">
         <label>Start</label>
@@ -67,47 +68,66 @@
       </div>
       <div class="evt100">
         <label>Event</label>
-        <input id="evtTxt" type="text" required>
+        <input id="evtTxt" type="text" autocomplete="off" required>
       </div>
       <div class="evt100">
         <input type="hidden" id="evtID">
-        <input type="button" id="evtDel" class="mi" value="delete">
-        <input type="submit" id="evtSave" class="mi" value="save">
+        <button type="button" id="evtDel" class="icon-bin2"></button>
+        <button type="submit" id="evtSave" class="icon-checkmark"></button>
       </div>
     </form></dialog>
 
     <!-- (X) ABOUT -->
-    <div id="aboutFoot" onclick="document.getElementById('aboutWrap').show()">
-      <i class="mi">help_outline</i> ABOUT JS CALENDAR PWA
+    <div id="aboutFoot" onclick="about.show()">
+      ABOUT JS CALENDAR PWA
     </div>
     <dialog id="aboutWrap"><div id="aboutPop">
-      <div id="aboutCX" class="mi" onclick="document.getElementById('aboutWrap').close()">
-        clear
-      </div>
+      <div id="aboutCX" class="icon-cross" onclick="about.close()"></div>
       <img src="assets/head-pwa-calendar.webp" id="aboutHead">
+      
+      <!-- (X1) LINKS -->
+      <h3 class="aboutTitle">
+        <i class="ico-sm icon-sphere"></i> LINKS & DOCUMENTATION
+      </h3>
+      <div class="aboutSection"><ul>
+        <li><a href="https://code-boxx.com/javascript-calendar-pwa/" target="_blank">JS Calendar PWA Official Webpage</a></li>
+        <li><a href="https://github.com/code-boxx/js-calendar-pwa" target="_blank">JS Calendar PWA GitHub</a></li>
+      </ul></div>
 
-      <div id="aboutLinks">
-        <h3>Links & Documentation</h3>
-        <ul>
-          <li><a href="https://code-boxx.com/javascript-calendar-pwa/" target="_blank">JS Calendar PWA Official Webpage</a></li>
-          <li><a href="https://github.com/code-boxx/js-calendar-pwa" target="_blank">JS Calendar PWA GitHub</a></li>
-        </ul>
-
-        <h3>Socials</h3>
-        <ul>
-          <li><a href="https://code-boxx.com/" target="_blank">Code Boxx Webpage</a></li>
-          <li><a href="https://payhip.com/codeboxx" target="_blank">Code Boxx Store (Buy a little something to support us?)</a></li>
-          <li><a href="https://www.youtube.com/c/CodeBoxx" target="_blank">Code Boxx YouTube</a></li>
-          <li><a href="https://www.pinterest.com/codeboxx/" target="_blank">Code Boxx Pinterest</a></li>
-          <li><a href="https://github.com/code-boxx/" target="_blank">GitHub</a></li>
-          <li><a href="https://codepen.io/code-boxx" target="_blank">CodePen</a></li>
-        </ul>
-
-        <h3>Built With</h3>
-        <ul>
-          <li><a href="https://developers.google.com/fonts/docs/material_icons" target="_blank">Material Icons</a></li>
-        </ul>
+      <!-- (X2) SUPPORT -->
+      <h3 class="aboutTitle">
+        <i class="ico-sm icon-heart"></i> SUPPORT
+      </h3>
+      <div class="aboutSection">
+        <a href="https://www.paypal.com/paypalme/wstoh/5" class="aboutBtn" target="_blank">
+          <i class="ico-sm icon-mug"></i> Buy me a coffee
+        </a>
+        <a href="https://payhip.com/codeboxx" class="aboutBtn" target="_blank">
+          <i class="ico-sm icon-cart"></i> Code Boxx Store
+        </a>
       </div>
+
+      <!-- (X3) SOCIALS -->
+      <h3 class="aboutTitle">
+        <i class="ico-sm icon-smile2"></i> SOCIALS
+      </h3>
+      <div class="aboutSection"><ul>
+        <li><a href="https://code-boxx.com/" target="_blank">Code Boxx</a></li>
+        <li><a href="https://www.youtube.com/c/CodeBoxx" target="_blank">YouTube</a></li>
+        <li><a href="https://www.pinterest.com/codeboxx/" target="_blank">Pinterest</a></li>
+        <li><a href="https://github.com/code-boxx/" target="_blank">GitHub</a></li>
+        <li><a href="https://codepen.io/code-boxx" target="_blank">CodePen</a></li>
+        <li><a href="https://dev.to/codeboxx" target="_blank">DEV</a></li>
+      </ul></div>
+
+      <!-- (F) CREDITS -->
+      <h3 class="aboutTitle">
+        <i class="ico-sm icon-hammer"></i> CREDITS / BUILT WITH
+      </h3>
+      <div class="aboutSection"><ul>
+        <li><a href="https://icomoon.io/" target="_blank">IcoMoon</a></li>
+        <li><a href="https://github.com/sql-js" target="_blank">SQL.JS</a></li>
+      </ul></div>
     </div></dialog>
   </body>
 </html>

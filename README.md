@@ -1,5 +1,5 @@
 ## JS EVENTS CALENDAR PWA
-This is an Events Calendar Progressive Web App (PWA) made with pure HTML, CSS, Javascript. Yes, it is installable and serverless - Capable of running offline completely.
+This is an events calendar made with pure HTML, CSS, JS. It is a tutorial/project/experiment to showcase the capabilities of modern web apps and Progressive Web App (PWA) - Yes, this is installable and serverless. Capable of running completely offline.
 <br><br>
 
 ## :camera: SCREENSHOTS
@@ -10,7 +10,7 @@ This is an Events Calendar Progressive Web App (PWA) made with pure HTML, CSS, J
 </p><br>
 
 ## :ballot_box_with_check: REQUIREMENTS
-1) "Grade A" browser. With support for service worker, indexed database, cache storage.
+1) "Grade A" browser. With support for service worker, web assembly, cache storage.
 2) https:// is required for the features to work properly.
 3) http://localhost works fine for testing too.
 <br><br>

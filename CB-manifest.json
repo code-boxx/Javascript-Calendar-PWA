@@ -3,10 +3,10 @@
   "name": "JS Calendar",
   "icons": [{
     "src": "assets/favicon.png",
-    "sizes": "64x64",
+    "sizes": "128x128",
     "type": "image/png"
   }, {
-    "src": "assets/icon-512.png",
+    "src": "assets/ico-512.png",
     "sizes": "512x512",
     "type": "image/png"
   }],
