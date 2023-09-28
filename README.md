@@ -1,5 +1,5 @@
-## JS EVENTS CALENDAR PWA
-This is an events calendar made with pure HTML, CSS, JS, and web assembly to support SQLite. It is a tutorial/project/experiment to showcase the capabilities of modern web apps and Progressive Web App (PWA) - Yes, this is installable and serverless. Capable of running completely offline.
+## JAVASCRIPT EVENTS CALENDAR PWA
+This is an events calendar made with pure HTML, CSS, JS, and web assembly to support SQLite. It is a tutorial/project/experiment to showcase the capabilities of modern Progressive Web App (PWA) - Yes, this is installable and serverless. Capable of running completely offline.
 <br><br>
 
 ## :camera: SCREENSHOTS
